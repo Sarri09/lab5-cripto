@@ -1,13 +1,7 @@
-FROM ubuntu:14.10
+FROM ubuntu:18.10
 
-RUN apt-get update && \
-    apt-get install -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN sed -i 's/archive/old-releases/g' /etc/apt/sources.list
+RUN sed -i '/^deb.*security.ubuntu.com/s/^/#/' /etc/apt/sources.list 
 
-WORKDIR /app
-
-EXPOSE 8080
-
-CMD ["/bin/bash"]
+RUN apt-get update && apt install -y sudo net-tools openssh-client
 
