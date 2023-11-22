@@ -1,13 +1,16 @@
-FROM ubuntu:14.10
+FROM ubuntu:20.10
 
-RUN apt-get update && \
-    apt-get install -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN sed -i 's/archive/old-releases/g' /etc/apt/sources.list
+RUN sed -i '/^deb.*security.ubuntu.com/s/^/#/' /etc/apt/sources.list 
 
-WORKDIR /app
+RUN apt update && apt install -y sudo net-tools openssh-client
 
-EXPOSE 8080
+RUN useradd -m -s /bin/bash test && echo "test:test" | chpasswd
 
-CMD ["/bin/bash"]
+RUN apt-get install -y openssh-server
 
+# RUN apt-get install -y wireshark tshark
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]
